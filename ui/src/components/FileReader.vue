@@ -16,19 +16,19 @@ export default {
       if (file.type === "text/tab-separated-values") {
         const reader = new FileReader();
 
-        reader.onload = e => this.$emit("load", e.target.result);
+        reader.onload = (e) => this.$emit("load", e.target.result);
         reader.readAsText(file);
       } else {
         this.$emit("error", "Wrong file format");
       }
       this.loading = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-  input{
-    margin-top: 5px;
-  }
+input {
+  margin-top: 5px;
+}
 </style>

@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import FileReader from "./FileReader.vue";
 export default {
   name: "Home",
@@ -24,7 +25,7 @@ export default {
       if (this.file) {
         const lines = this.file.split("\n");
 
-          const columns = lines[0].split("\t");
+        const columns = lines[0].split("\t");
         let rows = [];
 
         for (let i = 1; i < lines.length; i++) {
@@ -41,7 +42,7 @@ export default {
       } else {
         return [];
       }
-    }
+    },
   },
   methods: {
     loadFile(fileContent) {
@@ -52,10 +53,14 @@ export default {
       this.file = "";
       this.errorMessage = errorMessage;
     },
-    sendEmails() {
-      console.log(this.fileAsArray);
-    }
-  }
+    async sendEmails() {
+      await axios
+        .post("http://localhost:3001/api/emails", { emails: this.fileAsArray })
+        .then((resp) => {
+          console.log(resp);
+        });
+    },
+  },
 };
 </script>
 
