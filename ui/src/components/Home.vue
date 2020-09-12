@@ -102,28 +102,4 @@ form {
   margin-right: auto;
   margin-left: auto;
 }
-button {
-  background: #42b983;
-  border: 1px solid #42b983;
-  color: white;
-  margin-top: 15px;
-  padding: 8px 12px;
-  transition-duration: 0.3s;
-}
-button:disabled {
-  background: rgba(66, 185, 131, 0.7);
-}
-button:not(:disabled):hover {
-  background: white;
-  color: #42b983;
-  cursor: pointer;
-}
-.errorMessage {
-  padding-top: 5px;
-  color: darkred;
-}
-.successMessage {
-  padding-top: 5px;
-  color: darkgreen;
-}
 </style>

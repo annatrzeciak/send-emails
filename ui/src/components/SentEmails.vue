@@ -2,6 +2,10 @@
   <div>
     <h2>Sent emails</h2>
     <div v-if="loading"><i class="loading" /> Loading...</div>
+    <div class="errorMessage" v-if="errorMessage">
+      {{ errorMessage }}<br />
+      <button @click="loadEmails" class="small link">try again</button>
+    </div>
     <div v-if="sortedEmails.length">
       <table>
         <thead>
@@ -28,7 +32,7 @@ import Email from "./Email";
 export default {
   name: "SentEmails",
   components: { Email },
-  data: () => ({ loading: false }),
+  data: () => ({ loading: false, errorMessage: "" }),
   computed: {
     ...mapGetters("email", ["EMAILS"]),
     sortedEmails() {
@@ -38,12 +42,20 @@ export default {
   },
   methods: {
     ...mapActions("email", ["FETCH_EMAILS"]),
+    loadEmails() {
+      this.errorMessage = "";
+      this.loading = true;
+      this.FETCH_EMAILS()
+        .catch((e) => {
+          this.errorMessage = e.bodyText;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
   },
   created() {
-    this.loading = true;
-    this.FETCH_EMAILS().finally(() => {
-      this.loading = false;
-    });
+    this.loadEmails();
   },
 };
 </script>
