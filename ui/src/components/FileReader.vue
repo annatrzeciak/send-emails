@@ -1,6 +1,12 @@
 <template>
   <div>
-    <input name="file" type="file" accept=".tsv" @change="loadTextFromFile" />
+    <input
+      ref="fileInput"
+      name="file"
+      type="file"
+      accept=".tsv"
+      @change="loadTextFromFile"
+    />
     <i v-if="loading" class="loading" />
   </div>
 </template>
@@ -9,6 +15,10 @@
 export default {
   name: "FileReader",
   data: () => ({ loading: false }),
+  props: {
+    hasErrors: Boolean,
+    successfullySent: Boolean,
+  },
   methods: {
     loadTextFromFile(ev) {
       this.loading = true;
@@ -22,6 +32,18 @@ export default {
         this.$emit("error", "Wrong file format");
       }
       this.loading = false;
+    },
+  },
+  watch: {
+    hasErrors() {
+      if (this.hasErrors) {
+        this.$refs.fileInput.value = "";
+      }
+    },
+    successfullySent() {
+      if (this.successfullySent) {
+        this.$refs.fileInput.value = "";
+      }
     },
   },
 };

@@ -1,25 +1,38 @@
 <template>
   <div class="content">
-    <h1>Send email to multiple users</h1>
-    <form @submit.prevent="sendEmails">
-      <label>
-        Load tsv file
-        <FileReader @load="loadFile" @error="setErrorMessage" />
-      </label>
-      <div class="errorMessage" v-if="errorMessage">{{ errorMessage }}</div>
-      <button :disabled="!fileAsArray.length" type="submit">Send</button>
-    </form>
+    <div class="col">
+      <h1>Send email to multiple users</h1>
+      <form @submit.prevent="sendEmails">
+        <label>
+          Load tsv file
+          <FileReader
+            :hasErrors="Boolean(errorMessage)"
+            :successfullySent="Boolean(successMessage)"
+            @load="loadFile"
+            @error="setErrorMessage"
+          />
+        </label>
+        <div class="errorMessage" v-if="errorMessage">{{ errorMessage }}</div>
+        <div class="successMessage" v-if="successMessage">
+          {{ successMessage }}
+        </div>
+        <button :disabled="!fileAsArray.length" type="submit">Send</button>
+      </form>
+    </div>
+    <div class="col"><SentEmails /></div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import { mapActions } from "vuex";
+
 import FileReader from "./FileReader.vue";
+import SentEmails from "./SentEmails";
 export default {
   name: "Home",
   props: {},
-  components: { FileReader },
-  data: () => ({ file: null, errorMessage: "" }),
+  components: { SentEmails, FileReader },
+  data: () => ({ file: null, errorMessage: "", successMessage: "" }),
   computed: {
     fileAsArray() {
       if (this.file) {
@@ -45,20 +58,27 @@ export default {
     },
   },
   methods: {
+    ...mapActions("email", ["SEND_EMAILS"]),
+
     loadFile(fileContent) {
       this.errorMessage = "";
+      this.successMessage = "";
       this.file = fileContent;
     },
     setErrorMessage(errorMessage) {
       this.file = "";
       this.errorMessage = errorMessage;
     },
+    setSuccessMessage(successMessage) {
+      this.file = "";
+      this.successMessage = successMessage;
+    },
     async sendEmails() {
-      await axios
-        .post("http://localhost:3001/api/emails", { emails: this.fileAsArray })
-        .then((resp) => {
-          console.log(resp);
-        });
+      this.SEND_EMAILS(this.fileAsArray)
+        .then(() => {
+          this.setSuccessMessage("Form submitted successfully");
+        })
+        .catch((e) => this.setErrorMessage(e.bodyText));
     },
   },
 };
@@ -67,6 +87,11 @@ export default {
 <style scoped>
 .content {
   text-align: center;
+  max-width: 1200px;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
 h3 {
   margin: 40px 0 0;
@@ -96,5 +121,9 @@ button:not(:disabled):hover {
 .errorMessage {
   padding-top: 5px;
   color: darkred;
+}
+.successMessage {
+  padding-top: 5px;
+  color: darkgreen;
 }
 </style>
