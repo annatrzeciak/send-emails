@@ -4,6 +4,10 @@ Web app which accepts a TSV file with a list of customer names and
 their email addresses as an input. Data from file is pass to the back-end. 
 Emails are sent to all users and the progress is shown in the app.   
 
+Example app view: 
+
+![Example app view](ui/public/example-view.png?raw=true "Example app view")
+
 Example customers_list.tsv file:
 ```
 Name    Email
