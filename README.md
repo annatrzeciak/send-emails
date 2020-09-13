@@ -2,7 +2,8 @@
 ## Project description
 Web app which accepts a TSV file with a list of customer names and 
 their email addresses as an input. Data from file is pass to the back-end. 
-Emails are sent to all users and the progress is shown in the app.   
+Emails are sent to all users and the progress is shown in the app. All records are saved in DB 
+and shown in the table below. [Socket.io](https://socket.io/) was used to track status changes
 
 Example app view: 
 
