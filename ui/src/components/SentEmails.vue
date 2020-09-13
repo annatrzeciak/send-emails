@@ -69,6 +69,11 @@ table {
 table thead tr {
   background: rgba(0, 0, 0, 0.2);
 }
+table th,
+table /deep/ td {
+  padding: 5px 10px;
+  text-align: left;
+}
 
 table /deep/ tr:nth-of-type(2n) {
   background: rgba(0, 0, 0, 0.1);

@@ -13,13 +13,15 @@ router.post('/', async (req, res) => {
       email: item.Email,
       name: item.Name,
       date: new Date(),
-      status: 'Added email to the queue',
+      status: 1,
+      status_message: 'Added email to the queue',
     })),
     (err, docs) => {
       if (err) {
         res.status(400).send(`Error: ${err.message}`);
       } else {
         result = docs;
+        emailController.sendEmails(docs);
         res.status(200).json(result);
       }
     }

@@ -15,10 +15,12 @@
     "express": "^4.17.1",
     "http": "0.0.1-security",
     "mongoose": "^5.10.5",
+    "nodemailer": "latest",
     "nodemon": "^2.0.4",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "eslint": "^7.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",

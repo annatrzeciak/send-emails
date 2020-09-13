@@ -1,4 +1,9 @@
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 module.exports = {
-  mongoURI:
-    'mongodb+srv://send-emails:hjEA220BLOa2dtFU@cluster0-cr7xd.mongodb.net/send-emails?retryWrites=true&w=majority',
+  mongoURI: process.env.mongoURI,
+  mailUser: process.env.mailUser,
+  mailPass: process.env.mailPass,
 };
