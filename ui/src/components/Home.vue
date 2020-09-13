@@ -12,6 +12,9 @@
             @error="setErrorMessage"
           />
         </label>
+        <div class="errorMessage" v-if="!fileIsCorrect">
+          Incorrect data in file
+        </div>
         <div class="errorMessage" v-if="errorMessage">{{ errorMessage }}</div>
         <div class="successMessage" v-if="successMessage">
           {{ successMessage }}
@@ -34,6 +37,18 @@ export default {
   components: { SentEmails, FileReader },
   data: () => ({ file: null, errorMessage: "", successMessage: "" }),
   computed: {
+    fileIsCorrect() {
+      if (this.file) {
+        if (
+          this.fileAsArray.length &&
+          this.fileAsArray.every((row) => row.Email && row.Name)
+        )
+          return true;
+      } else {
+        if (this.fileAsArray.length === 0) return true;
+      }
+      return false;
+    },
     fileAsArray() {
       if (this.file) {
         const lines = this.file.split("\n");
@@ -66,11 +81,11 @@ export default {
       this.file = fileContent;
     },
     setErrorMessage(errorMessage) {
-      this.file = "";
+      this.file = null;
       this.errorMessage = errorMessage;
     },
     setSuccessMessage(successMessage) {
-      this.file = "";
+      this.file = null;
       this.successMessage = successMessage;
     },
     async sendEmails() {
