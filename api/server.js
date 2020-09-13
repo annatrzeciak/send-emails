@@ -33,6 +33,7 @@ const server = http.listen(3333, () => {
   console.log('server is running on port', server.address().port);
 });
 const io = socketIO(server);
+io.set('origins', '*:*');
 
 io.on('connection', (socket) => {
   console.log(`Socket Connection Established with ID :${socket.id}`);

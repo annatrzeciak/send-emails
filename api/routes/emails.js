@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
         res.status(400).send(`Error: ${err.message}`);
       } else {
         result = docs;
-        emailController.sendEmails(docs);
+        emailController.sendEmails(req.app.io, docs);
         res.status(200).json(result);
       }
     }

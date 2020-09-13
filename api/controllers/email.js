@@ -23,43 +23,66 @@ const generateMail = (name, email) => ({
   text: `Hey ${name}, it’s test message`,
 });
 
-exports.sendEmails = (people) => {
-  people.forEach((person) => {
-    Email.findByIdAndUpdate(person.id, {
-      status: 2,
-      status_message: 'Sending email',
-    });
-    transport.sendMail(
-      generateMail(person.name, person.email),
-      (error, info) => {
-        if (error) {
-          console.log(error);
-          Email.findByIdAndUpdate(
-            person.id,
-            {
-              status: 4,
-              status_message: `Sending email failed, ${error.message}`,
-            },
-            (err, doc) => {
-              console.log(doc);
-            }
-          );
+exports.sendEmails = async (io, people) => {
+  for (const person of people) {
+    // eslint-disable-next-line no-await-in-loop
+    await Email.findOneAndUpdate(
+      // eslint-disable-next-line no-underscore-dangle
+      { _id: person._id },
+      {
+        status: 2,
+        status_message: 'Sending email',
+      },
+      { new: true },
+      (err, doc) => {
+        if (err) {
+          io.emit('SENDING_ERROR', err);
         } else {
-          setTimeout(() => {
-            Email.findByIdAndUpdate(
-              person.id,
-              {
-                status: 3,
-                status_message: 'Sending email completed successfully ',
-              },
-              (err, doc) => {
-                console.log(doc);
-              }
-            );
-            console.log(info);
-          }, 5000);
+          io.emit('UPDATE_STATUS', doc);
         }
       }
     );
-  });
+
+    // eslint-disable-next-line no-await-in-loop
+    await transport.sendMail(
+      generateMail(person.name, person.email),
+      (err, info) => {
+        if (err) {
+          Email.findOneAndUpdate(
+            // eslint-disable-next-line no-underscore-dangle
+            { _id: person._id },
+            {
+              status: 4,
+              status_message: `Sending email failed, ${err.message}`,
+            },
+            { new: true },
+            (error, doc) => {
+              if (error) {
+                io.emit('SENDING_ERROR', err);
+              } else {
+                io.emit('UPDATE_STATUS', doc);
+              }
+            }
+          );
+        } else if (info) {
+          Email.findOneAndUpdate(
+            // eslint-disable-next-line no-underscore-dangle
+            { _id: person._id },
+            {
+              status: 3,
+              status_message: 'Sending email completed successfully ',
+            },
+            { new: true },
+            (error, doc) => {
+              if (error) {
+                io.emit('SENDING_ERROR', err);
+              } else {
+                io.emit('UPDATE_STATUS', doc);
+              }
+            }
+          );
+        }
+      }
+    );
+  }
 };

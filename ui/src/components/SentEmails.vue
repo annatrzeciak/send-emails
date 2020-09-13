@@ -2,8 +2,12 @@
   <div>
     <h2>Sent emails</h2>
     <div v-if="loading"><i class="loading" /> Loading...</div>
-    <div class="errorMessage" v-if="errorMessage">
-      {{ errorMessage }}<br />
+    <div class="errorMessage" v-if="errorMessage || SENDING_ERROR">
+      {{
+        errorMessage
+          ? errorMessage
+          : "An error occurred while sending messages"
+      }}<br />
       <button @click="loadEmails" class="small link">try again</button>
     </div>
     <div v-if="sortedEmails.length">
@@ -34,7 +38,7 @@ export default {
   components: { Email },
   data: () => ({ loading: false, errorMessage: "" }),
   computed: {
-    ...mapGetters("email", ["EMAILS"]),
+    ...mapGetters("email", ["EMAILS", "SENDING_ERROR"]),
     sortedEmails() {
       const emails = this.EMAILS;
       return emails.sort((a, b) => (a.date < b.date ? 1 : -1));
@@ -66,13 +70,24 @@ table {
   margin-left: auto;
   border-spacing: 0;
 }
+
 table thead tr {
   background: rgba(0, 0, 0, 0.2);
 }
+
 table th,
 table /deep/ td {
   padding: 5px 10px;
   text-align: left;
+  width: 25%;
+}
+
+table /deep/ td:nth-of-type(1) {
+  width: 10%;
+}
+
+table /deep/ td:nth-of-type(3) {
+  width: 40%;
 }
 
 table /deep/ tr:nth-of-type(2n) {

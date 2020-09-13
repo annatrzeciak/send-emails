@@ -11,6 +11,10 @@ Vue.use(
   new VueSocketIO({
     debug: true,
     connection: SocketInstance,
+    vuex: {
+      store,
+      actionPrefix: "SOCKET_",
+    },
   })
 );
 Vue.use(VueResource);
