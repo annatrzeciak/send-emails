@@ -17,7 +17,7 @@
             <th>Name</th>
             <th>Email</th>
             <th>Status</th>
-            <th>date</th>
+            <th>Form sent</th>
           </tr>
         </thead>
         <tbody>
